@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Mars\Domain\Entities;
 
 use App\Mars\Domain\Enums\Direction;
+use App\Mars\Domain\Exceptions\ObstacleDetectedException;
+use App\Mars\Domain\Exceptions\OutOfBoundsException;
 use App\Mars\Domain\ValueObjects\Position;
 
 final class Rover
@@ -14,7 +16,7 @@ final class Rover
         private Direction $direction,
         private readonly Plateau $plateau
     ) {
-        $this->plateau->validatePosition($position);
+        $this->plateau->validatePosition($this->position);
     }
 
     public function position(): Position
@@ -39,14 +41,28 @@ final class Rover
 
     public function moveForward(): void
     {
-        $newPosition = match ($this->direction) {
-            Direction::NORTH => new Position($this->position->x(), $this->position->y() + 1),
-            Direction::EAST => new Position($this->position->x() + 1, $this->position->y()),
-            Direction::SOUTH => new Position($this->position->x(), $this->position->y() - 1),
-            Direction::WEST => new Position($this->position->x() - 1, $this->position->y()),
-        };
+        $newPosition = $this->calculateNewPosition();
+
+        if ($this->plateau->hasObstacleAt($newPosition)) {
+            throw new ObstacleDetectedException($newPosition);
+        }
 
         $this->plateau->validatePosition($newPosition);
         $this->position = $newPosition;
+    }
+
+    private function calculateNewPosition(): Position
+    {
+        $x = $this->position->x();
+        $y = $this->position->y();
+
+        match ($this->direction) {
+            Direction::NORTH => $y++,
+            Direction::EAST => $x++,
+            Direction::SOUTH => $y--,
+            Direction::WEST => $x--,
+        };
+
+        return new Position($x, $y);
     }
 }

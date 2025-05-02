@@ -7,6 +7,7 @@ namespace Tests\Unit\Mars\Domain\Entities;
 use App\Mars\Domain\Entities\Plateau;
 use App\Mars\Domain\Entities\Rover;
 use App\Mars\Domain\Enums\Direction;
+use App\Mars\Domain\Exceptions\ObstacleDetectedException;
 use App\Mars\Domain\Exceptions\OutOfBoundsException;
 use App\Mars\Domain\ValueObjects\Position;
 use PHPUnit\Framework\TestCase;
@@ -105,6 +106,23 @@ final class RoverTest extends TestCase
         );
 
         $this->expectException(OutOfBoundsException::class);
+        $rover->moveForward();
+    }
+
+    public function test_it_throws_exception_when_moving_into_obstacle(): void
+    {
+        // Create a plateau with a known obstacle at (1, 3)
+        $plateau = new Plateau(5, 5, false);
+        $plateau->addObstacle(new Position(1, 3));
+
+        $rover = new Rover(
+            new Position(1, 2),
+            Direction::NORTH,
+            $plateau
+        );
+
+        $this->expectException(ObstacleDetectedException::class);
+        $this->expectExceptionMessage('Obstacle detected at position (1, 3)');
         $rover->moveForward();
     }
 }

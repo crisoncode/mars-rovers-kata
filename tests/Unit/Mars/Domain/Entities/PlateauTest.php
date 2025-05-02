@@ -11,7 +11,15 @@ use PHPUnit\Framework\TestCase;
 
 final class PlateauTest extends TestCase
 {
-    public function test_it_creates_a_plateau(): void
+    public function test_it_creates_a_plateau_with_default_dimensions(): void
+    {
+        $plateau = new Plateau();
+
+        $this->assertEquals(200, $plateau->width());
+        $this->assertEquals(200, $plateau->height());
+    }
+
+    public function test_it_creates_a_plateau_with_custom_dimensions(): void
     {
         $plateau = new Plateau(5, 5);
 
@@ -45,5 +53,23 @@ final class PlateauTest extends TestCase
         $this->expectExceptionMessage('Position is outside plateau boundaries');
 
         $plateau->validatePosition(new Position(6, 6));
+    }
+
+    public function test_it_generates_obstacles(): void
+    {
+        $plateau = new Plateau(5, 5);
+        $hasObstacle = false;
+
+        // Check if any obstacle was generated
+        for ($x = 0; $x <= 5; $x++) {
+            for ($y = 0; $y <= 5; $y++) {
+                if ($plateau->hasObstacleAt(new Position($x, $y))) {
+                    $hasObstacle = true;
+                    break 2;
+                }
+            }
+        }
+
+        $this->assertTrue($hasObstacle);
     }
 }
