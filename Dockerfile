@@ -16,6 +16,11 @@ RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 # Install PHP extensions
 RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 
+# Install Swagger requirements
+RUN docker-php-ext-install mbstring xml dom \
+    && pecl install pcov \
+    && docker-php-ext-enable pcov
+
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
@@ -28,11 +33,12 @@ COPY . /var/www
 # Install dependencies
 RUN composer install
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www
 
 # Expose port 8000 for Laravel's built-in server
 EXPOSE 8000
+
+# Creates the swagger docs
+CMD php artisan l5-swagger:generate
 
 # Start Laravel's server
 CMD php artisan serve --host=0.0.0.0 --port=8000
