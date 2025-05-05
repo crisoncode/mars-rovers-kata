@@ -27,29 +27,42 @@ This backend simulates a Mars Rover navigating a planet, processing a sequence o
    cd mars-rovers-kata
    ```
 
-2. **Install dependencies**
+2. **Setup the project**
+
+### With make
    ```bash
-   composer install
+   Make build
+   Make up
+   ```
+### With Docker
+   ```bash
+   docker compose build
+   docker compose up
    ```
 
-3. **Run the application**
+### In local
    ```bash
+   composer install
    php artisan serve
    ```
-   The API will be available at [http://localhost:8000](http://localhost:8000).
+
+3. **Use the application**
+   Now you can use the built in swagger feature for use the API that moves the rover or for rebuild the map with more or less space and obstacles.
+   http://127.0.0.1:8000/api/documentation
 
 ---
 
 ## 🧑‍💻 How to Use
 
 - The main API endpoints are:
-  - `GET /api/mars/state` – Get the current planet and rover state.
-  - `POST /api/mars/commands` – Send a command sequence to the rover (e.g., `FFRRFFFRL`).
+  - `GET /api/rover/state` – Get the current planet and rover state.
+  - `POST /api/rover/commands` – Send a command sequence to the rover (e.g., `MRMMMLMR`).
+  - `POST /api/mars/configure` – Configure the planet size and obstacles.
 
-- The rover accepts commands:
-  - `F` – Move forward
-  - `L` – Turn left
-  - `R` – Turn right
+Values accepted for the plannet configuration:
+  - Width: `200` – The width of the planet (int).
+  - Height: `200` – The height of the planet (int).
+  - `0.2` – 20% of probability to create obstacles (float).
 
 ---
 
@@ -59,49 +72,15 @@ This backend simulates a Mars Rover navigating a planet, processing a sequence o
 
 If you have PHP installed locally, run all backend tests with:
 ```bash
+#with make
+make test
+
+#with docker
+docker compose run --rm test
+
+#in Local machine
 php artisan test
 ```
-
-### Using Docker (No PHP Installation Required)
-
-You can run tests without installing PHP locally using Docker and Make:
-
-1. **Build the Docker images:**
-   ```bash
-   make build
-   ```
-
-2. **Run all tests:**
-   ```bash
-   make test
-   ```
-
-3. **Run specific test suites:**
-   ```bash
-   make test-unit     # Run only unit tests
-   make test-feature  # Run only feature tests
-   ```
-
-4. **Start the application:**
-   ```bash
-   make up
-   ```
-   The API will be available at [http://localhost:8000](http://localhost:8000).
-
-5. **Stop the application:**
-   ```bash
-   make down
-   ```
-
-6. **Open a shell in the container:**
-   ```bash
-   make shell
-   ```
-
-Run `make help` to see all available commands.
-
-This will execute all unit and feature tests, including domain logic and command parsing.
-
 ---
 
 ## 🏗️ Architecture Notes
@@ -110,14 +89,18 @@ This will execute all unit and feature tests, including domain logic and command
 - **Domain:** All business rules and state transitions are in the domain layer.
 - **Application:** Command parsing and orchestration are handled in the application layer.
 - **Adapters:** HTTP controllers expose the API.
+- **Data persistence:** Data is persisted in memory instead of using a database engine (it's an overkill from my point of view). I tried to use the session that laravel provides but I had some issues with the session ids (Swagger does not save any cookie ID in the browser I guess) so for be quick I decided to use the cache instead.
+- **Testing:** In this kata i decided to make unit testing for the domain layer and integration testing for the controller that is the orchestrator of the application layer.
 
+
+## 🧠 Developer notes
+
+- **Tests:** Unit and feature/integration tests in `tests/Unit/Mars` and `tests/Feature`
+- **Swagger:** Built-in swagger feature for improve the usage.
+- **Docker:** Docker is used for development and testing
 ---
 
-## 📝 Example Use Case
 
-- **Initial position:** (2, 3), facing North
-- **Commands:** `FFRRFFFRL`
-- **Expected final position:** (2, 2), facing South
 
 ---
 
