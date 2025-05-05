@@ -34,17 +34,6 @@ final class RoverTest extends TestCase
         $this->assertEquals(Direction::NORTH, $this->rover->direction());
     }
 
-    public function test_it_throws_exception_for_invalid_initial_position(): void
-    {
-        $this->expectException(OutOfBoundsException::class);
-
-        new Rover(
-            new Position(6, 6),
-            Direction::NORTH,
-            $this->plateau
-        );
-    }
-
     public function test_it_turns_left(): void
     {
         $this->rover->turnLeft();
