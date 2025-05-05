@@ -83,7 +83,7 @@ final class RoverTest extends TestCase
     public function test_it_moves_forward(): void
     {
         // Create a planet map without random obstacles
-        $planetMap = new PlanetMap(5, 5, false);
+        $planetMap = new PlanetMap(5, 5, 0);
 
         $rover = new Rover(
             new Position(2, 2),
@@ -98,7 +98,7 @@ final class RoverTest extends TestCase
     public function test_it_detects_obstacles(): void
     {
         // Create a planet map with a known obstacle at (1, 3)
-        $planetMap = new PlanetMap(5, 5, false);
+        $planetMap = new PlanetMap(5, 5, 1);
         $planetMap->addObstacle(new Position(1, 3));
 
         $rover = new Rover(

@@ -203,22 +203,39 @@ class MarsRoverController extends Controller
         $height = $request->input('height');
         $obstacleProbability = $request->input('obstacleProbability');
         
-        // Configure the map with custom settings
-        $this->mapRepository->configureMap($width, $height, $obstacleProbability);
+        // Validate obstacle probability if provided
+        if ($obstacleProbability !== null) {
+            if ($obstacleProbability < 0 || $obstacleProbability > 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Obstacle probability must be between 0 and 1'
+                ], 400);
+            }
+        }
         
-        // Initialize the rover with the new map
-        $this->planetMap = $this->mapRepository->get();
-        $this->roverRepository->initialize($this->planetMap);
-        $this->rover = $this->roverRepository->get();
-        
-        return response()->json([
-            'success' => true,
-            'message' => 'Map configured successfully',
-            'config' => [
-                'width' => $width ?? PlanetMap::DEFAULT_WIDTH,
-                'height' => $height ?? PlanetMap::DEFAULT_HEIGHT,
-                'obstacleProbability' => $obstacleProbability ?? 0.1,
-            ]
-        ]);
+        try {
+            // Configure the map with custom settings
+            $this->mapRepository->configureMap($width, $height, $obstacleProbability);
+            
+            // Initialize the rover with the new map
+            $this->planetMap = $this->mapRepository->get();
+            $this->roverRepository->initialize($this->planetMap);
+            $this->rover = $this->roverRepository->get();
+            
+            return response()->json([
+                'success' => true,
+                'message' => 'Map configured successfully',
+                'config' => [
+                    'width' => $width ?? PlanetMap::DEFAULT_WIDTH,
+                    'height' => $height ?? PlanetMap::DEFAULT_HEIGHT,
+                    'obstacleProbability' => $obstacleProbability ?? 0.1,
+                ]
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 400);
+        }
     }
 }
