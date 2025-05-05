@@ -55,10 +55,51 @@ This backend simulates a Mars Rover navigating a planet, processing a sequence o
 
 ## 🧪 Running Tests
 
-Run all backend tests with:
+### Using PHP Locally
+
+If you have PHP installed locally, run all backend tests with:
 ```bash
 php artisan test
 ```
+
+### Using Docker (No PHP Installation Required)
+
+You can run tests without installing PHP locally using Docker and Make:
+
+1. **Build the Docker images:**
+   ```bash
+   make build
+   ```
+
+2. **Run all tests:**
+   ```bash
+   make test
+   ```
+
+3. **Run specific test suites:**
+   ```bash
+   make test-unit     # Run only unit tests
+   make test-feature  # Run only feature tests
+   ```
+
+4. **Start the application:**
+   ```bash
+   make up
+   ```
+   The API will be available at [http://localhost:8000](http://localhost:8000).
+
+5. **Stop the application:**
+   ```bash
+   make down
+   ```
+
+6. **Open a shell in the container:**
+   ```bash
+   make shell
+   ```
+
+Run `make help` to see all available commands.
+
 This will execute all unit and feature tests, including domain logic and command parsing.
 
 ---
