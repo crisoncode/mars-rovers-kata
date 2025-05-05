@@ -95,12 +95,85 @@
                     }
                 }
             }
+        },
+        "/api/mars/configure": {
+            "post": {
+                "tags": [
+                    "Mars"
+                ],
+                "summary": "Configure the Mars map settings",
+                "operationId": "0b779f5873fabe96385851e4ac0de393",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/MapConfiguration"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Map configured successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Map configured successfully"
+                                        },
+                                        "config": {
+                                            "$ref": "#/components/schemas/MapConfiguration"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "MapConfiguration": {
+                "properties": {
+                    "width": {
+                        "description": "Width of the map",
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "height": {
+                        "description": "Height of the map",
+                        "type": "integer",
+                        "example": 100
+                    },
+                    "obstacleProbability": {
+                        "description": "Probability of obstacles (0-1)",
+                        "type": "number",
+                        "format": "float",
+                        "example": 0.2
+                    }
+                },
+                "type": "object"
+            }
         }
     },
     "tags": [
         {
             "name": "Rover",
             "description": "Rover"
+        },
+        {
+            "name": "Mars",
+            "description": "Mars"
         }
     ]
 }
