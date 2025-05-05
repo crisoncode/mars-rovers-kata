@@ -1,4 +1,4 @@
-.PHONY: help build up down test shell
+.PHONY: help build up down test shell install
 
 # Default target
 help:
@@ -8,6 +8,7 @@ help:
 	@echo "  make down        - Stop the application"
 	@echo "  make test        - Run all tests"
 	@echo "  make shell       - Open a shell in the app container"
+	@echo "  make install     - Run composer install"
 
 # Build the Docker images
 build:
@@ -24,6 +25,10 @@ up-d:
 # Stop the application
 down:
 	docker compose down
+
+# Run composer install
+install:
+	docker compose run --rm app composer install
 
 # Run all tests
 test:

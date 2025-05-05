@@ -1,33 +1,32 @@
-version: '3'
-
 services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: mars-rovers-app
-    restart: unless-stopped
-    volumes:
-      - .:/var/www
-    ports:
-      - "8000:8000"
-    networks:
-      - mars-rovers-network
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: mars-rovers-app
+        restart: unless-stopped
+        volumes:
+            - .:/var/www
+        ports:
+            - "8000:8000"
+        networks:
+            - mars-rovers-network
 
-  # Test service for running tests
-  test:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: mars-rovers-test
-    volumes:
-      - .:/var/www
-    command: php artisan test
-    networks:
-      - mars-rovers-network
-    depends_on:
-      - app
+    # Test service for running tests
+    test:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: mars-rovers-test
+        volumes:
+            - .:/var/www
+            - /var/www/vendor
+        command: php artisan test
+        networks:
+            - mars-rovers-network
+        depends_on:
+            - app
 
 networks:
-  mars-rovers-network:
-    driver: bridge
+    mars-rovers-network:
+        driver: bridge
