@@ -1,0 +1,106 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Rover Mars API",
+        "version": "1.0"
+    },
+    "paths": {
+        "/api/rover/position": {
+            "get": {
+                "tags": [
+                    "Rover"
+                ],
+                "summary": "Get the current rover position and direction",
+                "operationId": "c45d23f26a9939cb66de04eaefcd809c",
+                "responses": {
+                    "200": {
+                        "description": "Current position and direction",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "position": {
+                                            "properties": {
+                                                "x": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "y": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        "direction": {
+                                            "type": "string",
+                                            "example": "N"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/rover/command": {
+            "post": {
+                "tags": [
+                    "Rover"
+                ],
+                "summary": "Send commands to the rover",
+                "operationId": "40b6d2b88ea6ef146c25347cbb3b44bf",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "commands"
+                                ],
+                                "properties": {
+                                    "commands": {
+                                        "type": "string",
+                                        "example": "FFRL"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Result after executing commands",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "result": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        },
+                                        "finalState": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Rover",
+            "description": "Rover"
+        }
+    ]
+}

@@ -14,6 +14,9 @@ use App\Mars\Domain\ValueObjects\Position;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
+/**
+ * @OA\Info(title="Rover Mars API", version="1.0")
+ */
 class MarsRoverController extends Controller
 {
     private Plateau $plateau;
@@ -32,8 +35,22 @@ class MarsRoverController extends Controller
     }
 
     /**
-     * GET /api/rover/position
-     * Returns the current position and direction of the rover.
+     * @OA\Get(
+     *     path="/api/rover/position",
+     *     summary="Get the current rover position and direction",
+     *     tags={"Rover"},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Current position and direction",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="position", type="object",
+     *                 @OA\Property(property="x", type="integer", example=1),
+     *                 @OA\Property(property="y", type="integer", example=2)
+     *             ),
+     *             @OA\Property(property="direction", type="string", example="N")
+     *         )
+     *     )
+     * )
      */
     public function getPosition(): JsonResponse
     {
@@ -47,9 +64,26 @@ class MarsRoverController extends Controller
     }
 
     /**
-     * POST /api/rover/command
-     * Accepts a command string (e.g., FFRL) and executes it.
-     * Returns the new position and direction, or error if any command fails.
+     * @OA\Post(
+     *     path="/api/rover/command",
+     *     summary="Send commands to the rover",
+     *     tags={"Rover"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"commands"},
+     *             @OA\Property(property="commands", type="string", example="FFRL")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Result after executing commands",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="result", type="array", @OA\Items(type="object")),
+     *             @OA\Property(property="finalState", type="object")
+     *         )
+     *     )
+     * )
      */
     public function executeCommands(Request $request): JsonResponse
     {
