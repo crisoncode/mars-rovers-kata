@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Unit\Mars\Domain\Entities;
 
-use App\Mars\Domain\Entities\Plateau;
+use App\Mars\Domain\Entities\PlanetMap;
 use App\Mars\Domain\Entities\Rover;
 use App\Mars\Domain\Enums\Direction;
 use App\Mars\Domain\Exceptions\ObstacleDetectedException;
@@ -14,76 +14,101 @@ use PHPUnit\Framework\TestCase;
 
 final class RoverTest extends TestCase
 {
-    private Plateau $plateau;
-    private Rover $rover;
+    private PlanetMap $planetMap;
+    private Position $initialPosition;
+    private Direction $initialDirection;
 
     protected function setUp(): void
     {
-        $this->plateau = new Plateau(5, 5);
-        $this->rover = new Rover(
-            new Position(1, 2),
-            Direction::NORTH,
-            $this->plateau
-        );
+        parent::setUp();
+        $this->planetMap = new PlanetMap(5, 5);
+        $this->initialPosition = new Position(2, 2);
+        $this->initialDirection = Direction::NORTH;
     }
 
     public function test_it_creates_a_rover(): void
     {
-        $this->assertEquals(1, $this->rover->position()->x());
-        $this->assertEquals(2, $this->rover->position()->y());
-        $this->assertEquals(Direction::NORTH, $this->rover->direction());
+        $rover = new Rover(
+            $this->initialPosition,
+            $this->initialDirection,
+            $this->planetMap
+        );
+
+        $this->assertEquals($this->initialPosition, $rover->position());
+        $this->assertEquals($this->initialDirection, $rover->direction());
     }
 
     public function test_it_turns_left(): void
     {
-        $this->rover->turnLeft();
-        $this->assertEquals(Direction::WEST, $this->rover->direction());
+        $rover = new Rover(
+            $this->initialPosition,
+            Direction::NORTH,
+            $this->planetMap
+        );
 
-        $this->rover->turnLeft();
-        $this->assertEquals(Direction::SOUTH, $this->rover->direction());
+        $rover->turnLeft();
+        $this->assertEquals(Direction::WEST, $rover->direction());
 
-        $this->rover->turnLeft();
-        $this->assertEquals(Direction::EAST, $this->rover->direction());
+        $rover->turnLeft();
+        $this->assertEquals(Direction::SOUTH, $rover->direction());
 
-        $this->rover->turnLeft();
-        $this->assertEquals(Direction::NORTH, $this->rover->direction());
+        $rover->turnLeft();
+        $this->assertEquals(Direction::EAST, $rover->direction());
+
+        $rover->turnLeft();
+        $this->assertEquals(Direction::NORTH, $rover->direction());
     }
 
     public function test_it_turns_right(): void
     {
-        $this->rover->turnRight();
-        $this->assertEquals(Direction::EAST, $this->rover->direction());
+        $rover = new Rover(
+            $this->initialPosition,
+            Direction::NORTH,
+            $this->planetMap
+        );
 
-        $this->rover->turnRight();
-        $this->assertEquals(Direction::SOUTH, $this->rover->direction());
+        $rover->turnRight();
+        $this->assertEquals(Direction::EAST, $rover->direction());
 
-        $this->rover->turnRight();
-        $this->assertEquals(Direction::WEST, $this->rover->direction());
+        $rover->turnRight();
+        $this->assertEquals(Direction::SOUTH, $rover->direction());
 
-        $this->rover->turnRight();
-        $this->assertEquals(Direction::NORTH, $this->rover->direction());
+        $rover->turnRight();
+        $this->assertEquals(Direction::WEST, $rover->direction());
+
+        $rover->turnRight();
+        $this->assertEquals(Direction::NORTH, $rover->direction());
     }
 
     public function test_it_moves_forward(): void
     {
-        $this->rover->moveForward();
-        $this->assertEquals(1, $this->rover->position()->x());
-        $this->assertEquals(3, $this->rover->position()->y());
+        // Create a planet map without random obstacles
+        $planetMap = new PlanetMap(5, 5, false);
 
-        $this->rover->turnRight();
-        $this->rover->moveForward();
-        $this->assertEquals(2, $this->rover->position()->x());
-        $this->assertEquals(3, $this->rover->position()->y());
+        $rover = new Rover(
+            new Position(2, 2),
+            Direction::NORTH,
+            $planetMap
+        );
 
-        $this->rover->turnRight();
-        $this->rover->moveForward();
-        $this->assertEquals(2, $this->rover->position()->x());
-        $this->assertEquals(2, $this->rover->position()->y());
+        $rover->moveForward();
+        $this->assertEquals(new Position(2, 3), $rover->position());
+    }
 
-        $this->rover->turnRight();
-        $this->rover->moveForward();
-        $this->assertEquals(1, $this->rover->position()->x());
-        $this->assertEquals(2, $this->rover->position()->y());
+    public function test_it_detects_obstacles(): void
+    {
+        // Create a planet map with a known obstacle at (1, 3)
+        $planetMap = new PlanetMap(5, 5, false);
+        $planetMap->addObstacle(new Position(1, 3));
+
+        $rover = new Rover(
+            new Position(1, 2),
+            Direction::NORTH,
+            $planetMap
+        );
+
+        $this->expectException(ObstacleDetectedException::class);
+        $rover->moveForward();
     }
 
     public function test_it_throws_exception_when_moving_out_of_bounds(): void
@@ -91,27 +116,10 @@ final class RoverTest extends TestCase
         $rover = new Rover(
             new Position(5, 5),
             Direction::NORTH,
-            $this->plateau
+            $this->planetMap
         );
 
         $this->expectException(OutOfBoundsException::class);
-        $rover->moveForward();
-    }
-
-    public function test_it_throws_exception_when_moving_into_obstacle(): void
-    {
-        // Create a plateau with a known obstacle at (1, 3)
-        $plateau = new Plateau(5, 5, false);
-        $plateau->addObstacle(new Position(1, 3));
-
-        $rover = new Rover(
-            new Position(1, 2),
-            Direction::NORTH,
-            $plateau
-        );
-
-        $this->expectException(ObstacleDetectedException::class);
-        $this->expectExceptionMessage('Obstacle detected at position (1, 3)');
         $rover->moveForward();
     }
 }

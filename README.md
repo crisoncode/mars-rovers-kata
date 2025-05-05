@@ -6,7 +6,7 @@ A Laravel implementation of the Mars Rovers technical test, structured using hex
 
 ## 🚀 Project Overview
 
-This backend simulates a Mars Rover navigating a plateau, processing a sequence of movement and rotation commands. The codebase is organized to demonstrate clean architecture and testable domain logic.
+This backend simulates a Mars Rover navigating a planet, processing a sequence of movement and rotation commands. The codebase is organized to demonstrate clean architecture and testable domain logic.
 
 ---
 
@@ -43,7 +43,7 @@ This backend simulates a Mars Rover navigating a plateau, processing a sequence 
 ## 🧑‍💻 How to Use
 
 - The main API endpoints are:
-  - `GET /api/mars/state` – Get the current plateau and rover state.
+  - `GET /api/mars/state` – Get the current planet and rover state.
   - `POST /api/mars/commands` – Send a command sequence to the rover (e.g., `FFRRFFFRL`).
 
 - The rover accepts commands:

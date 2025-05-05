@@ -8,7 +8,7 @@ use App\Mars\Domain\Exceptions\OutOfBoundsException;
 use App\Mars\Domain\ValueObjects\Position;
 use InvalidArgumentException;
 
-final class Plateau
+final class PlanetMap
 {
     private const DEFAULT_WIDTH = 200;
     private const DEFAULT_HEIGHT = 200;
@@ -24,7 +24,7 @@ final class Plateau
         $this->height = $height ?? self::DEFAULT_HEIGHT;
 
         if ($this->width <= 0 || $this->height <= 0) {
-            throw new InvalidArgumentException('Plateau dimensions must be positive');
+            throw new InvalidArgumentException('Planet map dimensions must be positive');
         }
 
         $this->obstacles = [];
@@ -54,7 +54,7 @@ final class Plateau
     public function validatePosition(Position $position): void
     {
         if (!$this->isValidPosition($position)) {
-            throw new OutOfBoundsException('Position is outside plateau boundaries');
+            throw new OutOfBoundsException('Position is outside planet map boundaries');
         }
     }
 

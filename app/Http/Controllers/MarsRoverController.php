@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Mars\Application\Services\RoverCommandParser;
-use App\Mars\Domain\Entities\Plateau;
+use App\Mars\Domain\Entities\PlanetMap;
 use App\Mars\Domain\Entities\Rover;
 use App\Mars\Domain\Enums\Direction;
 use App\Mars\Domain\Exceptions\ObstacleDetectedException;
@@ -19,17 +19,17 @@ use Illuminate\Http\Request;
  */
 class MarsRoverController extends Controller
 {
-    private Plateau $plateau;
+    private PlanetMap $planetMap;
     private Rover $rover;
     private RoverCommandParser $commandParser;
 
     public function __construct()
     {
-        $this->plateau = new Plateau(200, 200);
+        $this->planetMap = new PlanetMap(200, 200);
         $this->rover = new Rover(
             new Position(1, 2),
             Direction::NORTH,
-            $this->plateau
+            $this->planetMap
         );
         $this->commandParser = new RoverCommandParser();
     }
