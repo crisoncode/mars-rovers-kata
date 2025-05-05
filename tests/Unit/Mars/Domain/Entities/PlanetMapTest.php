@@ -59,6 +59,8 @@ final class PlanetMapTest extends TestCase
     public function test_it_generates_obstacles(): void
     {
         $planetMap = new PlanetMap(5, 5);
+        // Call initialize to generate obstacles
+        $planetMap->initialize();
 
         $hasObstacles = false;
         for ($x = 0; $x <= 5; $x++) {

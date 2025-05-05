@@ -10,27 +10,36 @@ use InvalidArgumentException;
 
 final class PlanetMap
 {
-    private const DEFAULT_WIDTH = 200;
-    private const DEFAULT_HEIGHT = 200;
-    private const OBSTACLE_PROBABILITY = 0.1; // 10% chance of obstacle
+    public const DEFAULT_WIDTH = 200;
+    public const DEFAULT_HEIGHT = 200;
+    private float $obstacleProbability = 0.1; // Default 10% chance of obstacle
 
     private int $width;
     private int $height;
     private array $obstacles;
 
-    public function __construct(?int $width = null, ?int $height = null, bool $generateObstacles = true)
+    public function __construct(?int $width = null, ?int $height = null, ?float $obstacleProbability = null)
     {
         $this->width = $width ?? self::DEFAULT_WIDTH;
         $this->height = $height ?? self::DEFAULT_HEIGHT;
+        
+        if ($obstacleProbability !== null) {
+            if ($obstacleProbability < 0 || $obstacleProbability > 1) {
+                throw new InvalidArgumentException('Obstacle probability must be between 0 and 1');
+            }
+            $this->obstacleProbability = $obstacleProbability;
+        }
 
         if ($this->width <= 0 || $this->height <= 0) {
             throw new InvalidArgumentException('Planet map dimensions must be positive');
         }
 
         $this->obstacles = [];
-        if ($generateObstacles) {
-            $this->generateObstacles();
-        }
+    }
+    
+    public function initialize(): void
+    {
+        $this->generateObstacles();
     }
 
     public function width(): int
@@ -75,7 +84,7 @@ final class PlanetMap
 
         for ($x = 0; $x <= $this->width; $x++) {
             for ($y = 0; $y <= $this->height; $y++) {
-                if (rand(0, 100) / 100 < self::OBSTACLE_PROBABILITY) {
+                if (rand(0, 100) / 100 < $this->obstacleProbability) {
                     $this->obstacles[$x][$y] = true;
                 }
             }

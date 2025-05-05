@@ -13,6 +13,15 @@ final class Rover
     private Position $position;
     private Direction $direction;
     private readonly PlanetMap $planetMap;
+    
+    public static function createDefault(PlanetMap $planetMap): self
+    {
+        // Default position at (2, 3) facing North as mentioned in README example
+        $defaultPosition = new Position(2, 3);
+        $defaultDirection = Direction::NORTH;
+        
+        return new self($defaultPosition, $defaultDirection, $planetMap);
+    }
 
     public function __construct(Position $position, Direction $direction, PlanetMap $planetMap)
     {
