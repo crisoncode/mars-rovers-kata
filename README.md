@@ -1,6 +1,6 @@
 # Mars Rovers Kata – Backend
 
-A Laravel implementation of the Mars Rovers technical test, structured using hexagonal architecture (ports & adapters).
+A Laravel implementation of the Mars Rovers technical test, structured using hexagonal architecture.
 
 ---
 
@@ -14,7 +14,7 @@ This backend simulates a Mars Rover navigating a planet, processing a sequence o
 
 - **Domain:** Core business logic (Entities, Value Objects, Enums, Exceptions) in `app/Mars/Domain`
 - **Application:** Use cases and services (e.g., command parsing) in `app/Mars/Application`
-- **Adapters:** HTTP controllers in `app/Http/Controllers`
+- **Adapters:** HTTP controllers are placed inside the infrastructure as an adapter and the gate to use the app in `app/Mars/Infrastructure/Http/`
 - **Tests:** Unit and feature tests in `tests/Unit/Mars` and `tests/Feature`
 
 ---
@@ -37,7 +37,7 @@ This backend simulates a Mars Rover navigating a planet, processing a sequence o
 ### With Docker
    ```bash
    docker compose build
-   docker compose up
+   docker compose up -d
    ```
 
 ### In local
