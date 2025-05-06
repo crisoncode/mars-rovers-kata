@@ -100,7 +100,7 @@ class MarsRoverController extends BaseController
      *         required=true,
      *         @OA\JsonContent(
      *             required={"commands"},
-     *             @OA\Property(property="commands", type="string", example="FFRL")
+     *             @OA\Property(property="commands", type="string", example="MRML")
      *         )
      *     ),
      *     @OA\Response(
