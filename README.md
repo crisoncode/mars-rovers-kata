@@ -68,17 +68,15 @@ Values accepted for the plannet configuration:
 
 ## 🧪 Running Tests
 
-### Using PHP Locally
 
-If you have PHP installed locally, run all backend tests with:
 ```bash
-#with make
+# with make
 make test
 
-#with docker
+# with docker
 docker compose run --rm test
 
-#in Local machine
+# in Local machine
 php artisan test
 ```
 ---
