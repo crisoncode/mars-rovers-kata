@@ -2,21 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers;
+namespace App\Mars\Infrastructure\Http;
 
 use App\Mars\Application\Services\RoverCommandParser;
 use App\Mars\Domain\Entities\PlanetMap;
 use App\Mars\Domain\Entities\Rover;
-use App\Mars\Domain\Enums\Direction;
 use App\Mars\Domain\Exceptions\ObstacleDetectedException;
 use App\Mars\Domain\Exceptions\OutOfBoundsException;
 use App\Mars\Domain\Repositories\MapRepository;
 use App\Mars\Domain\Repositories\RoverRepository;
-use App\Mars\Domain\ValueObjects\Position;
-use App\Mars\Infrastructure\Repositories\InMemoryMapRepository;
-use App\Mars\Infrastructure\Repositories\InMemoryRoverRepository;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
+
 
 /**
  * @OA\Info(title="Rover Mars API", version="1.0")
@@ -28,7 +26,7 @@ use Illuminate\Http\Request;
  *     @OA\Property(property="obstacleProbability", type="number", format="float", example=0.2, description="Probability of obstacles (0-1)")
  * )
  */
-class MarsRoverController extends Controller
+class MarsRoverController extends BaseController
 {
     private PlanetMap $planetMap;
     private Rover $rover;
@@ -159,7 +157,7 @@ class MarsRoverController extends Controller
                 break;
             }
         }
-        
+
         // Save both the map and rover state
         $this->mapRepository->save($this->planetMap);
         $this->roverRepository->save($this->rover);
@@ -175,7 +173,7 @@ class MarsRoverController extends Controller
             ],
         ]);
     }
-    
+
     /**
      * @OA\Post(
      *     path="/api/mars/configure",
@@ -202,7 +200,7 @@ class MarsRoverController extends Controller
         $width = $request->input('width');
         $height = $request->input('height');
         $obstacleProbability = $request->input('obstacleProbability');
-        
+
         // Validate obstacle probability if provided
         if ($obstacleProbability !== null) {
             if ($obstacleProbability < 0 || $obstacleProbability > 1) {
@@ -212,16 +210,16 @@ class MarsRoverController extends Controller
                 ], 400);
             }
         }
-        
+
         try {
             // Configure the map with custom settings
             $this->mapRepository->configureMap($width, $height, $obstacleProbability);
-            
+
             // Initialize the rover with the new map
             $this->planetMap = $this->mapRepository->get();
             $this->roverRepository->initialize($this->planetMap);
             $this->rover = $this->roverRepository->get();
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Map configured successfully',

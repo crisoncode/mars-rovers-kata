@@ -1,5 +1,5 @@
 <?php
-use App\Http\Controllers\MarsRoverController;
+use App\Mars\Infrastructure\Http\MarsRoverController;
 
 
 Route::get('/test', function () {

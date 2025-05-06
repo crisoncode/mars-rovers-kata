@@ -15,11 +15,7 @@ build:
 
 # Start the application
 up:
-	docker compose up app
-
-# Start the application in detached mode
-up-d:
-	docker compose up -d app
+	docker compose up -d
 
 # Stop the application
 down:
